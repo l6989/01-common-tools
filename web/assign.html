@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>요구자료 접수·배분</title>
+  <style>
+    :root{--navy:#12243f;--blue:#2463eb;--blue-dark:#174eb9;--sky:#edf4ff;--ink:#172033;--muted:#64748b;--line:#dbe3ef;--paper:#fff;--bg:#f4f7fb;--green:#16845b;--green-bg:#e8f7f0;--amber:#a25a08;--amber-bg:#fff5df;--red:#b42318;--red-bg:#ffefed;--radius:16px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+    .topbar{position:sticky;top:0;z-index:50;background:rgba(18,36,63,.97);color:#fff;backdrop-filter:blur(14px)}.topbar-inner{max-width:1480px;margin:auto;display:flex;align-items:center;gap:24px;padding:13px 24px}.brand{font-weight:850;margin-right:auto}.nav{display:flex;gap:6px;flex-wrap:wrap}.nav a,.nav span{padding:9px 12px;border-radius:10px;font-size:14px}.nav a:hover,.nav a.active{background:#ffffff18}.nav .future{opacity:.52;cursor:not-allowed}
+    main{max-width:1480px;margin:auto;padding:36px 24px 72px}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:26px}.page-head h1{font-size:34px;letter-spacing:-.04em;margin:0 0 8px}.page-head p{margin:0;color:var(--muted)}.storage-pill{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:13px;white-space:nowrap}.storage-pill strong{color:var(--blue)}
+    .section{background:#fff;border:1px solid var(--line);border-radius:20px;margin-bottom:22px;box-shadow:0 18px 45px -42px #17375e;overflow:hidden}.section-head{display:flex;align-items:center;gap:14px;padding:22px 24px;border-bottom:1px solid var(--line)}.section-no{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:var(--navy);color:#fff;font-weight:850}.section-head h2{font-size:21px;margin:0}.section-head p{color:var(--muted);font-size:14px;margin:4px 0 0}.section-body{padding:24px}
+    .upload-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:16px}.dropzone{position:relative;min-height:180px;border:2px dashed #aac0df;border-radius:16px;background:#f8fbff;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;transition:border-color .2s,transform .45s cubic-bezier(.34,1.56,.64,1),background .2s}.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:#f0f6ff;transform:translateY(-3px)}.dropzone input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.drop-icon{font-size:31px}.dropzone h3{margin:8px 0 5px}.dropzone p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+    .csv-card{border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;justify-content:center}.csv-card h3{margin:0 0 8px}.csv-card p{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.55}.file-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:43px;border:1px solid #bdd0ec;border-radius:11px;color:#194a98;font-weight:800;background:#f5f9ff;overflow:hidden}.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .progress{height:4px;background:#e7edf7;overflow:hidden;display:none}.progress.on{display:block}.progress span{display:block;width:38%;height:100%;background:var(--blue);animation:ind 1.05s ease-in-out infinite}.progress.determinate span{animation:none;transition:width .2s;width:var(--progress,0%)}@keyframes ind{from{transform:translateX(-110%)}to{transform:translateX(290%)}}
+    .message{display:none;margin-top:16px;padding:12px 14px;border-radius:12px;font-size:14px}.message.show{display:block}.message.info{background:var(--sky);color:#174fae}.message.error{background:var(--red-bg);color:var(--red);animation:shake .32s linear}.message.success{background:var(--green-bg);color:var(--green)}@keyframes shake{30%,70%{transform:translateX(-5px)}50%{transform:translateX(5px)}}
+    .summary-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}.summary-item{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fbfcfe}.summary-item strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.summary-meta{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px;margin-top:8px}.ok{color:var(--green);font-weight:850}.bad{color:var(--red);font-weight:850}.receipt-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px}.receipt-count{font-size:14px;color:var(--muted)}
+    .preview-wrap{display:none;margin-top:16px;border:1px solid var(--line);border-radius:13px;overflow:auto;max-height:340px}.preview-wrap.show{display:block}.preview-table{width:100%;min-width:820px;border-collapse:collapse;font-size:12px}.preview-table th{position:sticky;top:0;background:#edf2f8;color:#40506a;text-align:left;padding:10px;border-bottom:1px solid #ccd7e5}.preview-table td{padding:10px;border-bottom:1px solid #e6ebf2;vertical-align:top}.preview-table tr:last-child td{border-bottom:0}.preview-file{max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+    .btn{min-height:42px;border:0;border-radius:11px;padding:0 17px;font-weight:850;transition:transform .45s cubic-bezier(.34,1.56,.64,1),background .2s}.btn:hover:not(:disabled){transform:translateY(-2px)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover:not(:disabled){background:var(--blue-dark)}.btn.ghost{background:#f3f6fa;color:#34445c}.btn.small{min-height:34px;padding:0 12px;font-size:12px}
+    .toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.search{min-width:280px;flex:1;max-width:460px;border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:#fff}.stats{margin-left:auto;display:flex;gap:8px}.stat{padding:8px 11px;border-radius:10px;background:#f1f5fa;font-size:12px;color:#526078}.stat strong{color:var(--ink);font-size:14px;margin-left:4px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;max-height:68vh}.assign-table{border-collapse:separate;border-spacing:0;width:100%;min-width:1260px;font-size:13px}.assign-table th{position:sticky;top:0;z-index:3;background:#edf2f8;color:#40506a;text-align:left;padding:12px;border-bottom:1px solid #ccd7e5;font-size:12px}.assign-table td{vertical-align:top;padding:12px;border-bottom:1px solid #e6ebf2;background:#fff}.assign-table tr:last-child td{border-bottom:0}.assign-table tr:hover td{background:#fbfdff}.status{display:inline-flex;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:850;white-space:nowrap}.status.wait{background:var(--amber-bg);color:var(--amber)}.status.done{background:var(--green-bg);color:var(--green)}.item-title{font-weight:850}.item-sub{font-size:11px;color:var(--muted);margin-top:5px}.requirement{font-size:13px;line-height:1.55;min-width:300px}.subtext{white-space:pre-line;color:#536178;font-size:11px;margin-top:7px}.candidates{display:flex;flex-direction:column;gap:6px;min-width:205px}.candidate{display:flex;align-items:center;gap:7px;border:0;border-radius:9px;padding:7px 9px;background:#f3f7fd;text-align:left;color:#253855}.candidate:hover{background:#e5efff}.rank{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#dbe8fc;color:#1f5bb9;font-size:10px;font-weight:900}.candidate b{font-size:12px}.candidate small{display:block;color:#6b7b91;font-size:10px;margin-top:2px}.empty{color:#8a97aa;font-size:12px}.assignment{min-width:220px}.lead-select{width:100%;border:1px solid #cfd9e7;border-radius:9px;padding:8px;background:#fff}.collab{margin-top:8px;border:1px solid var(--line);border-radius:9px;background:#fafbfd}.collab summary{cursor:pointer;padding:8px;color:#526078;font-size:12px}.collab-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:0 9px 9px;max-height:180px;overflow:auto}.collab-grid label{display:flex;gap:5px;align-items:center;font-size:11px}.confirm-cell{min-width:120px}.method{font-size:11px;color:var(--muted);margin-top:7px}.method b{color:#34445c}
+    .empty-state{text-align:center;padding:54px 20px;color:var(--muted)}.empty-state strong{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}.footer-note{margin-top:14px;color:var(--muted);font-size:12px}.checkmark{display:inline-block;width:14px;height:8px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);margin-right:7px;animation:check .45s cubic-bezier(.34,1.56,.64,1)}@keyframes check{from{transform:rotate(-45deg) scale(0)}to{transform:rotate(-45deg) scale(1)}}
+    [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}[data-reveal].show{opacity:1;transform:none}
+    @media(max-width:860px){.upload-grid{grid-template-columns:1fr}.summary-list{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.topbar-inner{align-items:flex-start;flex-direction:column;gap:10px}.brand{margin-right:0}.stats{margin-left:0}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}[data-reveal]{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./index.html">A부 국회 요구자료</a>
+      <nav class="nav" aria-label="주요 화면">
+        <a href="./index.html">시작 화면</a>
+        <a class="active" href="./assign.html">배분</a>
+        <span class="future" title="S6에서 제공">현업 회신 · S6</span>
+        <span class="future" title="S8에서 제공">취합 · S8</span>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="page-head" data-reveal>
+      <div><h1>요구자료 접수·배분</h1><p>PDF 문항을 확인하고 주관 과와 협조 과를 확정합니다.</p></div>
+      <div class="storage-pill">저장 위치 <strong>이 브라우저</strong> · 서버 전송 없음</div>
+    </div>
+
+    <section class="section" id="receipt" data-reveal>
+      <div class="section-head"><span class="section-no">1</span><div><h2>접수</h2><p>PDF 여러 건 또는 기존 문항목록 CSV를 불러옵니다.</p></div></div>
+      <div class="progress" id="progress" aria-hidden="true"><span></span></div>
+      <div class="section-body">
+        <div class="upload-grid">
+          <label class="dropzone" id="dropzone">
+            <input id="pdfInput" type="file" accept="application/pdf,.pdf" multiple>
+            <span><span class="drop-icon">⇧</span><h3>요구서 PDF 올리기</h3><p>여러 파일을 선택하거나 이곳에 끌어 놓으세요.<br>PDF.js가 브라우저 안에서 글자를 읽습니다.</p></span>
+          </label>
+          <div class="csv-card"><h3>문항목록 CSV 불러오기</h3><p>기존 `문항목록.csv`도 같은 접수 목록으로 등록할 수 있습니다.</p><label class="file-btn">CSV 선택<input id="csvInput" type="file" accept="text/csv,.csv"></label></div>
+        </div>
+        <div class="message" id="receiptMessage" role="status"></div>
+        <div class="summary-list" id="summaryList"></div>
+        <div class="preview-wrap" id="previewWrap">
+          <table class="preview-table">
+            <thead><tr><th>파일</th><th>의원·문항</th><th>요구내용</th><th>세부항목·비고</th></tr></thead>
+            <tbody id="previewBody"></tbody>
+          </table>
+        </div>
+        <div class="receipt-actions">
+          <div class="receipt-count" id="receiptCount">불러온 문항이 없습니다.</div>
+          <button class="btn primary" id="registerButton" disabled>접수 등록</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="allocation" data-reveal>
+      <div class="section-head"><span class="section-no">2</span><div><h2>배분</h2><p>후보를 검토하고 주관 과·협조 과를 확정합니다.</p></div></div>
+      <div class="section-body">
+        <div class="toolbar">
+          <input class="search" id="searchInput" type="search" placeholder="의원, 문항번호, 요구내용 검색" aria-label="배분 문항 검색">
+          <div class="stats"><span class="stat">전체<strong id="totalStat">0</strong></span><span class="stat">확정<strong id="confirmedStat">0</strong></span><span class="stat">대기<strong id="waitingStat">0</strong></span></div>
+        </div>
+        <div class="table-wrap">
+          <table class="assign-table">
+            <thead><tr><th>상태</th><th>의원·문항</th><th>요구내용</th><th>후보 3순위</th><th>주관 과·협조 과</th><th>확정</th></tr></thead>
+            <tbody id="assignmentBody"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState"><strong>등록된 문항이 없습니다.</strong>위에서 PDF나 CSV를 불러온 뒤 접수 등록을 눌러 주세요.</div>
+        </div>
+        <div class="footer-note">후보 1순위가 주관 과 기본값입니다. 다른 과를 선택해 확정하면 확정방법이 ‘수정’으로 기록됩니다.</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./common.js"></script>
+  <script src="./split.js"></script>
+  <script src="./engine.js"></script>
+  <script type="module">
+    import * as pdfjsLib from "./lib/pdf.min.mjs";
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "./lib/pdf.worker.min.mjs";
+
+    const $ = (selector) => document.querySelector(selector);
+    const elements = {
+      pdfInput: $("#pdfInput"), csvInput: $("#csvInput"), dropzone: $("#dropzone"),
+      progress: $("#progress"), message: $("#receiptMessage"), summary: $("#summaryList"),
+      previewWrap: $("#previewWrap"), previewBody: $("#previewBody"),
+      count: $("#receiptCount"), register: $("#registerButton"), body: $("#assignmentBody"),
+      empty: $("#emptyState"), search: $("#searchInput"), total: $("#totalStat"),
+      confirmed: $("#confirmedStat"), waiting: $("#waitingStat"),
+    };
+    let pendingRows = [];
+    let pendingSummaries = [];
+    let departments = [];
+
+    function setMessage(text, kind = "info") {
+      elements.message.className = `message show ${kind}`;
+      elements.message.textContent = text;
+    }
+    function clearMessage() { elements.message.className = "message"; elements.message.textContent = ""; }
+    function setProgress(on, percent = null) {
+      elements.progress.classList.toggle("on", on);
+      elements.progress.classList.toggle("determinate", percent !== null);
+      if (percent !== null) elements.progress.style.setProperty("--progress", `${percent}%`);
+    }
+
+    function linesFromTextContent(content) {
+      const lines = [];
+      let current = "";
+      let currentY = null;
+      let lastEndX = null;
+      const flush = () => { if (current.trim()) lines.push(current.trim()); current = ""; lastEndX = null; };
+      for (const item of content.items) {
+        if (!item.str) { if (item.hasEOL) flush(); continue; }
+        const y = Math.round(item.transform?.[5] || 0);
+        const x = item.transform?.[4] || 0;
+        if (current && currentY !== null && Math.abs(y - currentY) > 2) flush();
+        const gap = lastEndX === null ? 0 : x - lastEndX;
+        if (current && gap > 2 && !current.endsWith(" ") && !item.str.startsWith(" ")) current += " ";
+        current += item.str;
+        currentY = y;
+        lastEndX = x + (item.width || 0);
+        if (item.hasEOL) flush();
+      }
+      flush();
+      return lines;
+    }
+
+    async function extractPdf(file) {
+      const task = pdfjsLib.getDocument({ data: await file.arrayBuffer() });
+      const pdf = await task.promise;
+      const lines = [];
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        const page = await pdf.getPage(pageNumber);
+        lines.push(...linesFromTextContent(await page.getTextContent()));
+      }
+      return lines.join("\n");
+    }
+
+    function renderSummaries() {
+      elements.summary.replaceChildren();
+      for (const summary of pendingSummaries) {
+        const card = document.createElement("div"); card.className = "summary-item";
+        const name = document.createElement("strong"); name.textContent = summary.파일명 || "CSV 자료"; card.append(name);
+        const meta = document.createElement("div"); meta.className = "summary-meta";
+        const expected = summary.파일명의문항수 === null ? "기준 없음" : `파일명 ${summary.파일명의문항수}`;
+        meta.append(document.createTextNode(`${expected} · 추출 ${summary.뽑은문항수} · 마지막 ${summary.마지막번호} · `));
+        const result = document.createElement("span"); result.className = summary.일치 ? "ok" : "bad"; result.textContent = summary.일치 ? "일치 O" : "일치 X"; meta.append(result); card.append(meta);
+        elements.summary.append(card);
+      }
+      elements.count.textContent = pendingRows.length ? `${pendingSummaries.length}개 파일 · ${pendingRows.length}문항을 접수 등록할 수 있습니다.` : "불러온 문항이 없습니다.";
+      elements.register.disabled = !pendingRows.length || pendingSummaries.some((summary) => !summary.일치);
+      renderPreview();
+    }
+
+    function renderPreview() {
+      elements.previewBody.replaceChildren();
+      elements.previewWrap.classList.toggle("show", pendingRows.length > 0);
+      for (const item of pendingRows) {
+        const row = document.createElement("tr");
+        const file = document.createElement("td"); file.className = "preview-file"; file.textContent = item.파일명;
+        const identity = document.createElement("td"); identity.textContent = `${item.의원} · ${item.문항번호}번`;
+        const requirement = document.createElement("td"); requirement.textContent = item.요구내용;
+        const extra = document.createElement("td"); extra.className = "subtext"; extra.textContent = [item.세부항목,item.비고].filter(Boolean).join("\n") || "-";
+        row.append(file,identity,requirement,extra); elements.previewBody.append(row);
+      }
+    }
+
+    async function processPdfFiles(files) {
+      if (!files.length) return;
+      clearMessage(); setProgress(true, 0); pendingRows = []; pendingSummaries = []; renderSummaries();
+      try {
+        for (let index = 0; index < files.length; index += 1) {
+          const file = files[index];
+          setMessage(`${file.name} 글자를 읽고 문항을 나누는 중입니다.`, "info");
+          const parsed = RequirementSplitter.parseText(await extractPdf(file), file.name);
+          pendingRows.push(...parsed.rows); pendingSummaries.push(parsed.summary);
+          setProgress(true, Math.round(((index + 1) / files.length) * 100)); renderSummaries();
+        }
+        const allMatch = pendingSummaries.every((summary) => summary.일치);
+        setMessage(allMatch ? `${files.length}개 PDF에서 ${pendingRows.length}문항을 확인했습니다.` : "문항 수 또는 번호가 맞지 않는 파일이 있습니다.", allMatch ? "success" : "error");
+      } catch (error) {
+        pendingRows = []; pendingSummaries = []; renderSummaries(); setMessage(error.message, "error");
+      } finally { setProgress(false); }
+    }
+
+    elements.pdfInput.addEventListener("change", (event) => processPdfFiles([...event.target.files]));
+    for (const eventName of ["dragenter", "dragover"]) elements.dropzone.addEventListener(eventName, (event) => { event.preventDefault(); elements.dropzone.classList.add("drag"); });
+    for (const eventName of ["dragleave", "drop"]) elements.dropzone.addEventListener(eventName, (event) => { event.preventDefault(); elements.dropzone.classList.remove("drag"); });
+    elements.dropzone.addEventListener("drop", (event) => processPdfFiles([...event.dataTransfer.files].filter((file) => file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"))));
+    elements.csvInput.addEventListener("change", async (event) => {
+      const [file] = event.target.files; if (!file) return;
+      try {
+        pendingRows = AssignmentCommon.parseCsv(await file.text()); pendingSummaries = AssignmentCommon.summarizeCsvRows(pendingRows); renderSummaries();
+        setMessage(`CSV에서 ${pendingRows.length}문항을 확인했습니다.`, pendingSummaries.every((summary) => summary.일치) ? "success" : "error");
+      } catch (error) { pendingRows = []; pendingSummaries = []; renderSummaries(); setMessage(error.message, "error"); }
+    });
+
+    elements.register.addEventListener("click", () => {
+      const state = AssignmentCommon.registerItems(pendingRows, ClassificationEngine.classify);
+      setMessage(`${pendingRows.length}문항을 접수 등록했습니다.`, "success");
+      pendingRows = []; pendingSummaries = []; renderSummaries(); renderAssignments(state.items); location.hash = "allocation";
+    });
+
+    function makeCandidate(candidate, rank, item) {
+      const button = document.createElement("button"); button.className = "candidate"; button.type = "button";
+      const rankEl = document.createElement("span"); rankEl.className = "rank"; rankEl.textContent = rank;
+      const text = document.createElement("span"); const name = document.createElement("b"); name.textContent = `${candidate.과} · ${candidate.점수}`;
+      const evidence = document.createElement("small"); evidence.textContent = candidate.근거키워드.join(", "); text.append(name, evidence); button.append(rankEl, text);
+      button.title = `${candidate.과}를 주관 과로 선택`;
+      button.addEventListener("click", () => { const select = document.querySelector(`[data-lead="${CSS.escape(item.id)}"]`); select.value = candidate.과; select.dispatchEvent(new Event("change")); });
+      return button;
+    }
+
+    function makeAssignmentCell(item) {
+      const wrap = document.createElement("div"); wrap.className = "assignment";
+      const select = document.createElement("select"); select.className = "lead-select"; select.dataset.lead = item.id; select.setAttribute("aria-label", `${item.member} ${item.number}번 주관 과`);
+      const blank = document.createElement("option"); blank.value = ""; blank.textContent = "주관 과 선택"; select.append(blank);
+      departments.forEach((department) => { const option = document.createElement("option"); option.value = department; option.textContent = department; option.selected = department === item.lead; select.append(option); });
+      select.addEventListener("change", () => {
+        const current = AssignmentCommon.readState().items.find((value) => value.id === item.id);
+        AssignmentCommon.updateItem(item.id,{lead:select.value,collaborators:current.collaborators.filter((department)=>department!==select.value),status:"배분대기",confirmed:false,confirmationMethod:"",confirmedAt:null});
+        renderAssignments();
+      });
+      wrap.append(select);
+      const details = document.createElement("details"); details.className = "collab"; const summary = document.createElement("summary"); summary.textContent = `협조 과 ${item.collaborators.length}개`; details.append(summary);
+      const grid = document.createElement("div"); grid.className = "collab-grid";
+      departments.filter((department) => department !== item.lead).forEach((department) => { const label=document.createElement("label"); const input=document.createElement("input"); input.type="checkbox"; input.checked=item.collaborators.includes(department); input.addEventListener("change",()=>{const current=AssignmentCommon.readState().items.find((value)=>value.id===item.id); const set=new Set(current.collaborators); input.checked?set.add(department):set.delete(department); AssignmentCommon.updateItem(item.id,{collaborators:[...set]}); summary.textContent=`협조 과 ${set.size}개`;}); label.append(input,document.createTextNode(department)); grid.append(label); });
+      details.append(grid); wrap.append(details); return wrap;
+    }
+
+    function renderAssignments(items = AssignmentCommon.readState().items) {
+      const query = elements.search.value.trim().toLocaleLowerCase("ko-KR");
+      const filtered = items.filter((item) => !query || `${item.member} ${item.number} ${item.requirement}`.toLocaleLowerCase("ko-KR").includes(query));
+      elements.body.replaceChildren(); elements.empty.style.display = filtered.length ? "none" : "block";
+      for (const item of filtered) {
+        const row = document.createElement("tr");
+        const statusCell = document.createElement("td"); const status = document.createElement("span"); status.className=`status ${item.confirmed?"done":"wait"}`; status.textContent=item.confirmed?"배분확정":"배분대기"; statusCell.append(status);
+        const itemCell = document.createElement("td"); const title=document.createElement("div"); title.className="item-title"; title.textContent=`${item.member} · ${item.number}번`; const sub=document.createElement("div"); sub.className="item-sub"; sub.textContent=`${item.committee} · ${item.deadline}`; itemCell.append(title,sub);
+        const reqCell=document.createElement("td"); const req=document.createElement("div"); req.className="requirement"; req.textContent=item.requirement; reqCell.append(req); if(item.details||item.note){const extra=document.createElement("div"); extra.className="subtext"; extra.textContent=[item.details,item.note].filter(Boolean).join("\n"); reqCell.append(extra);}
+        const candidateCell=document.createElement("td"); const candidateWrap=document.createElement("div"); candidateWrap.className="candidates"; if(item.candidates.length)item.candidates.forEach((candidate,index)=>candidateWrap.append(makeCandidate(candidate,index+1,item))); else {const empty=document.createElement("span");empty.className="empty";empty.textContent="후보 없음 · 확인 필요";candidateWrap.append(empty);} candidateCell.append(candidateWrap);
+        const assignmentCell=document.createElement("td"); assignmentCell.append(makeAssignmentCell(item));
+        const confirmCell=document.createElement("td"); confirmCell.className="confirm-cell"; const button=document.createElement("button");button.className=`btn small ${item.confirmed?"ghost":"primary"}`;button.textContent=item.confirmed?"다시 확정":"확정";button.disabled=!item.lead; button.addEventListener("click",()=>{const current=AssignmentCommon.readState().items.find((value)=>value.id===item.id);const method=current.candidates[0]?.과===current.lead?"규칙":"수정";AssignmentCommon.updateItem(item.id,{status:"배분확정",confirmed:true,confirmationMethod:method,confirmedAt:new Date().toISOString()},{action:"배분확정",method,lead:current.lead,collaborators:current.collaborators});renderAssignments();setMessage(`${current.member} ${current.number}번을 ${current.lead}로 확정했습니다.`,"success");}); confirmCell.append(button); if(item.confirmationMethod){const method=document.createElement("div");method.className="method";const check=document.createElement("span");check.className="checkmark";const label=document.createTextNode("확정방법 ");const value=document.createElement("b");value.textContent=item.confirmationMethod;method.append(check,label,value);confirmCell.append(method);}
+        row.append(statusCell,itemCell,reqCell,candidateCell,assignmentCell,confirmCell); elements.body.append(row);
+      }
+      const all = AssignmentCommon.readState().items; const confirmed = all.filter((item)=>item.confirmed).length; elements.total.textContent=all.length;elements.confirmed.textContent=confirmed;elements.waiting.textContent=all.length-confirmed;
+    }
+
+    elements.search.addEventListener("input",()=>renderAssignments());
+
+    async function init() {
+      try {
+        const [, orgRows] = await Promise.all([ClassificationEngine.init(), AssignmentCommon.loadCsv("./data/A부_조직도_26개과.csv")]);
+        departments = orgRows.map((row)=>row.과).filter(Boolean); renderAssignments();
+      } catch (error) { setMessage(`기초자료를 읽지 못했습니다. 웹 서버로 열었는지 확인하세요. ${error.message}`,"error"); }
+      const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+      if(reduce)document.querySelectorAll("[data-reveal]").forEach(el=>el.classList.add("show"));
+      else{const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("show");io.unobserve(entry.target);}}),{threshold:.08});document.querySelectorAll("[data-reveal]").forEach(el=>io.observe(el));}
+    }
+    init();
+  </script>
+</body>
+</html>
